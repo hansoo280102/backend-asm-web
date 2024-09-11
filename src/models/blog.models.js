@@ -6,18 +6,15 @@ const BlogSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  description: {
-    type: String,
-    content: String,
-    category: String,
-    author: String,
-    rating: Number,
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    required: true,
-    trim: true,
+  description: String,
+  type: String,
+  content: String,
+  category: String,
+  author: String,
+  rating: Number,
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

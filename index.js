@@ -10,7 +10,10 @@ app.use(express.json());
 app.use(cors());
 
 const blogRoutes = require("./src/routes/blog.route");
+const commentRoutes = require("./src/routes/comment.route");
+
 app.use("/api/blogs", blogRoutes);
+app.use("/api/comments", commentRoutes);
 
 async function main() {
   await mongoose.connect(process.env.MONGO_URl);
