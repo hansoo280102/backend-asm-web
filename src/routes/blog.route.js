@@ -1,10 +1,12 @@
 const express = require("express");
 const Blog = require("../models/blog.models");
 const Comment = require("../models/comment.model");
+const verifyToken = require("../middleware/verifyToken");
+const isAdmin = require("../middleware/isAdmin");
 const router = express.Router();
 
 //create a blog post
-router.post("/create-post", async (req, res) => {
+router.post("/create-post", verifyToken, isAdmin, async (req, res) => {
   try {
     const newPost = new Blog({ ...req.body });
     await newPost.save();
@@ -17,6 +19,7 @@ router.post("/create-post", async (req, res) => {
     res.status(500).json({ message: "Error creating post" });
   }
 });
+
 // get all blogs
 router.get("/", async (req, res) => {
   try {
@@ -45,7 +48,9 @@ router.get("/", async (req, res) => {
         location,
       };
     }
-    const post = await Blog.find(query).sort({ createdAt: -1 });
+    const post = await Blog.find(query)
+      .populate("author", "email")
+      .sort({ createdAt: -1 });
     res.status(200).send({
       message: "Get all blogs successfully",
       posts: post,
@@ -80,7 +85,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //update a blog post
-router.patch("/update-post/:id", async (req, res) => {
+router.patch("/update-post/:id", verifyToken, async (req, res) => {
   try {
     const postId = req.params.id;
     const updatedPost = await Blog.findByIdAndUpdate(
@@ -104,7 +109,7 @@ router.patch("/update-post/:id", async (req, res) => {
 });
 
 // delete a blog post
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const postId = req.params.id;
     const deletedPost = await Blog.findByIdAndDelete(postId);
@@ -126,7 +131,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // get related blog posts by title
-router.get("/related/:id", async (req, res) => {
+router.get("/related/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {

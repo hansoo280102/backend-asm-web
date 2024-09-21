@@ -8,9 +8,16 @@ const BlogSchema = new mongoose.Schema({
   },
   description: String,
   type: String,
-  content: String,
+  content: {
+    type: Object,
+    required: true,
+  },
   category: String,
-  author: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   rating: Number,
   createdAt: {
     type: Date,
